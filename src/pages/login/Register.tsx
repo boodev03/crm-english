@@ -6,6 +6,7 @@ import {
   Group,
   Paper,
   PasswordInput,
+  Select,
   Text,
   TextInput,
   Title,
@@ -13,12 +14,11 @@ import {
 import { useForm } from "@mantine/form";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { loginUser } from "../../api/auth.api";
+import { useNavigate } from "react-router-dom";
+import { registerUser } from "../../api/auth.api";
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,11 +26,13 @@ const Login = () => {
     initialValues: {
       email: "",
       password: "",
+      role: "",
     },
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
       password: (value) =>
         value.length < 6 ? "Password should be at least 6 characters" : null,
+      role: (value) => (!value ? "Please select a role" : null),
     },
   });
 
@@ -39,17 +41,19 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await loginUser({
+      await registerUser({
         email: values.email,
         password: values.password,
+        role: values.role,
       });
 
-      // Redirect to the intended page or dashboard
-      const from = location.state?.from?.pathname || "/dashboard";
-      navigate(from, { replace: true });
+      // Redirect to dashboard
+      navigate("/dashboard", { replace: true });
     } catch (err: unknown) {
       const errorMessage =
-        err instanceof Error ? err.message : "An error occurred during login";
+        err instanceof Error
+          ? err.message
+          : "An error occurred during registration";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -61,7 +65,7 @@ const Login = () => {
       <Box mt={50} mb={30}>
         <Paper shadow="md" p="xl" radius="md" withBorder>
           <Title order={2} ta="center" mb="md">
-            Welcome back
+            Create an Account
           </Title>
 
           {error && (
@@ -90,18 +94,30 @@ const Login = () => {
               label="Password"
               placeholder="Your password"
               {...form.getInputProps("password")}
-              autoComplete="current-password"
+              autoComplete="new-password"
+            />
+
+            <Select
+              required
+              mt="md"
+              label="Role"
+              placeholder="Select a role"
+              data={[
+                { value: "admin", label: "Admin" },
+                { value: "manager", label: "Manager" },
+              ]}
+              {...form.getInputProps("role")}
             />
 
             <Button type="submit" fullWidth loading={loading} mt="xl">
-              Sign in
+              Register
             </Button>
           </form>
 
           <Group justify="center" mt="md">
-            <Text size="sm">Don't have an account?</Text>
-            <Button variant="subtle" onClick={() => navigate("/register")}>
-              Sign up
+            <Text size="sm">Already have an account?</Text>
+            <Button variant="subtle" onClick={() => navigate("/login")}>
+              Sign in
             </Button>
           </Group>
         </Paper>
@@ -110,4 +126,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

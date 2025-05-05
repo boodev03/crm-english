@@ -33,7 +33,7 @@ interface TableHeaderProps {
 
 export function TableHeader({
   title,
-  searchPlaceholder = "Tìm kiếm...",
+  searchPlaceholder = "Search...",
   searchValue,
   onSearchChange,
   filters = [],
@@ -59,22 +59,22 @@ export function TableHeader({
 
   return (
     <Stack gap="lg">
-      {title && (
-        <Group justify="space-between">
+      <Group justify="space-between">
+        {title && (
           <Text fw={700} size="xl">
             {title}
           </Text>
-          {addButton && (
-            <Button
-              leftSection={<IconPlus size={16} />}
-              onClick={addButton.onClick}
-              color="blue"
-            >
-              {addButton.label}
-            </Button>
-          )}
-        </Group>
-      )}
+        )}
+        {addButton && (
+          <Button
+            leftSection={<IconPlus size={16} />}
+            onClick={addButton.onClick}
+            color="blue"
+          >
+            {addButton.label}
+          </Button>
+        )}
+      </Group>
 
       <Group justify="space-between">
         <TextInput
@@ -94,7 +94,7 @@ export function TableHeader({
                 color="gray"
                 onClick={handleClearFilters}
               >
-                Xóa bộ lọc
+                Clear Filters
               </Button>
             )}
 
@@ -111,7 +111,7 @@ export function TableHeader({
                   color="gray"
                   onClick={() => setFilterOpened((o) => !o)}
                 >
-                  Bộ lọc {totalActiveFilters > 0 && `(${totalActiveFilters})`}
+                  Filters {totalActiveFilters > 0 && `(${totalActiveFilters})`}
                 </Button>
               </Popover.Target>
               <Popover.Dropdown>
@@ -123,14 +123,14 @@ export function TableHeader({
                         data={filter.options}
                         value={filter.value}
                         onChange={filter.onChange}
-                        placeholder={`Chọn ${filter.label.toLowerCase()}`}
+                        placeholder={`Select ${filter.label.toLowerCase()}`}
                         clearable
                       />
                     </div>
                   ))}
                   <Group justify="flex-end">
                     <Button size="xs" onClick={() => setFilterOpened(false)}>
-                      Áp dụng
+                      Apply
                     </Button>
                   </Group>
                 </Stack>

@@ -14,12 +14,14 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import {
   IconDashboard,
+  IconHeadphones,
   IconLogout,
   IconUserCheck,
   IconUserPlus,
 } from "@tabler/icons-react";
 import { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { logoutUser } from "../api/auth.api";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -36,13 +38,20 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     { icon: IconDashboard, label: "Dashboard", path: "/dashboard" },
     { icon: IconUserCheck, label: "Teachers", path: "/teachers" },
     { icon: IconUserPlus, label: "Students", path: "/students" },
+    {
+      icon: IconHeadphones,
+      label: "Listening Practice",
+      path: "/practice/listening",
+    },
   ];
 
-  const handleLogout = () => {
-    // Here you would handle the actual logout logic, clearing tokens, etc.
-    console.log("Logging out...");
-    // Redirect to login page after logout
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   const links = navItems.map((item) => (

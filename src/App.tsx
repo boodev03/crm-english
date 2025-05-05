@@ -1,18 +1,23 @@
-import "./App.css";
-// Import styles of packages that you've installed.
-// All packages except `@mantine/hooks` require styles imports
-import "@mantine/core/styles.css";
 import {
-  MantineProvider,
   createTheme,
   MantineColorsTuple,
+  MantineProvider,
 } from "@mantine/core";
+import "@mantine/core/styles.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  BrowserRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+} from "react-router-dom";
+import "./App.css";
 import { DashboardLayout } from "./components/DashboardLayout";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import Users from "./pages/Users";
-import Teachers from "./pages/teachers/Teachers";
-import Students from "./pages/Students";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { PublicRoute } from "./components/PublicRoute";
+import Login from "./pages/login/Login";
+import Register from "./pages/login/Register";
 
 const myColor: MantineColorsTuple = [
   "#e1f8ff",
@@ -34,21 +39,51 @@ const theme = createTheme({
   primaryColor: "myColor",
 });
 
+// Create a client
+const queryClient = new QueryClient();
+
+function AppContent() {
+  return (
+    <Routes>
+      <Route
+        element={
+          <PublicRoute>
+            <Outlet />
+          </PublicRoute>
+        }
+      >
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Route>
+      <Route
+        path="/*"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <Routes>
+                <Route
+                  path="/"
+                  element={<Navigate to="/dashboard" replace />}
+                />
+                <Route path="/dashboard" element={<div>Dashboard</div>} />
+              </Routes>
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
+}
+
 function App() {
   return (
-    <MantineProvider theme={theme}>
-      <BrowserRouter>
-        <DashboardLayout>
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/teachers" element={<Teachers />} />
-            <Route path="/students" element={<Students />} />
-          </Routes>
-        </DashboardLayout>
-      </BrowserRouter>
-    </MantineProvider>
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider theme={theme}>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </MantineProvider>
+    </QueryClientProvider>
   );
 }
 
