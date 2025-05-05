@@ -11,15 +11,16 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { nprogress } from "@mantine/nprogress";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { loginUser } from "../../api/auth.api";
+import { PUBLIC_ROUTES } from "../../routes/route";
+import { login } from "../../supabase/auth/auth.service";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm({
@@ -36,13 +37,14 @@ const Login = () => {
 
   const handleSubmit = async (values: typeof form.values) => {
     setError(null);
-    setLoading(true);
-
+    nprogress.start();
     try {
-      await loginUser({
+      const { error } = await login({
         email: values.email,
         password: values.password,
       });
+
+      if (error) throw error;
 
       // Redirect to the intended page or dashboard
       const from = location.state?.from?.pathname || "/dashboard";
@@ -52,16 +54,24 @@ const Login = () => {
         err instanceof Error ? err.message : "An error occurred during login";
       setError(errorMessage);
     } finally {
-      setLoading(false);
+      nprogress.complete();
     }
   };
 
   return (
-    <Container size="xs" px="xs">
-      <Box mt={50} mb={30}>
+    <Container
+      size="xs"
+      px="xs"
+      mih="100vh"
+      display="flex"
+      style={{
+        alignItems: "center",
+      }}
+    >
+      <Box h="100%" w="100%">
         <Paper shadow="md" p="xl" radius="md" withBorder>
           <Title order={2} ta="center" mb="md">
-            Welcome back
+            Login to EngStudy Center
           </Title>
 
           {error && (
@@ -93,15 +103,19 @@ const Login = () => {
               autoComplete="current-password"
             />
 
-            <Button type="submit" fullWidth loading={loading} mt="xl">
+            <Button type="submit" fullWidth mt="xl" loading={form.submitting}>
               Sign in
             </Button>
           </form>
 
           <Group justify="center" mt="md">
             <Text size="sm">Don't have an account?</Text>
-            <Button variant="subtle" onClick={() => navigate("/register")}>
-              Sign up
+            <Button
+              variant="subtle"
+              disabled={form.submitting}
+              onClick={() => navigate(PUBLIC_ROUTES.auth.register)}
+            >
+              Register
             </Button>
           </Group>
         </Paper>

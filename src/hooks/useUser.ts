@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getUser } from '../api/auth.api';
+import { getUser } from '../supabase/auth/auth.service';
 
 interface User {
     id: string;
@@ -8,33 +8,26 @@ interface User {
 }
 
 export const useUser = () => {
-
     // Query keys for better cache management
     const QUERY_KEYS = {
         USER: ['user'],
         CURRENT_USER: ['user', 'current'],
     };
+
     // Get current user query
-    const userQuery = useQuery({
+    const { data: user, isLoading, error, refetch } = useQuery({
         queryKey: QUERY_KEYS.CURRENT_USER,
-        queryFn: getUser,
-        retry: (failureCount, error) => {
-            // Don't retry if the error message is about missing auth session
-            if (error.message === 'Auth session missing!') {
-                return false;
-            }
-            return failureCount < 3;
+        queryFn: async () => {
+            const { user, error } = await getUser();
+            if (error) throw error;
+            return user;
         },
-        refetchOnMount: true,
-        refetchOnWindowFocus: true,
     });
 
     return {
-        user: userQuery.data as User | undefined,
-        isLoading: userQuery.isLoading,
-        isError: userQuery.isError,
-        error: userQuery.error,
-        isAuthenticated: !!userQuery.data,
-        refetch: userQuery.refetch,
+        user: user as User | undefined,
+        isLoading,
+        isError: error,
+        refetch,
     };
 };

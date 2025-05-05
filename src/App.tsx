@@ -4,6 +4,8 @@ import {
   MantineProvider,
 } from "@mantine/core";
 import "@mantine/core/styles.css";
+import { NavigationProgress } from "@mantine/nprogress";
+import "@mantine/nprogress/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   BrowserRouter,
@@ -13,23 +15,25 @@ import {
   Routes,
 } from "react-router-dom";
 import "./App.css";
-import { DashboardLayout } from "./components/DashboardLayout";
-import { ProtectedRoute } from "./components/ProtectedRoute";
-import { PublicRoute } from "./components/PublicRoute";
+import { DashboardLayout } from "./components/layouts/DashboardLayout";
+import ProtectedRoutes from "./components/layouts/ProtectedRoutes";
+import PublicRoutes from "./components/layouts/PublicRoutes";
 import Login from "./pages/login/Login";
 import Register from "./pages/login/Register";
+import { PRIVATE_ROUTES } from "./routes/route";
+import { useInitializeAuth } from "./stores/useAuthStore";
 
 const myColor: MantineColorsTuple = [
-  "#e1f8ff",
-  "#cbedff",
-  "#9ad7ff",
-  "#64c1ff",
-  "#3aaefe",
-  "#20a2fe",
-  "#099cff",
-  "#0088e4",
-  "#0079cd",
-  "#0068b6",
+  "#fff1e2",
+  "#ffe1cc",
+  "#ffc29a",
+  "#ffa164",
+  "#fe8537",
+  "#fe731a",
+  "#ff6400",
+  "#e45800",
+  "#cb4d00",
+  "#b14000",
 ];
 
 const theme = createTheme({
@@ -37,40 +41,51 @@ const theme = createTheme({
     myColor,
   },
   primaryColor: "myColor",
+  fontFamily: "Poppins, sans-serif",
 });
 
 // Create a client
 const queryClient = new QueryClient();
 
 function AppContent() {
+  // Initialize auth state
+  useInitializeAuth();
+
   return (
     <Routes>
       <Route
+        path="/auth"
         element={
-          <PublicRoute>
+          <PublicRoutes>
             <Outlet />
-          </PublicRoute>
+          </PublicRoutes>
         }
       >
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
       </Route>
       <Route
-        path="/*"
+        path="/"
         element={
-          <ProtectedRoute>
+          <ProtectedRoutes>
             <DashboardLayout>
-              <Routes>
-                <Route
-                  path="/"
-                  element={<Navigate to="/dashboard" replace />}
-                />
-                <Route path="/dashboard" element={<div>Dashboard</div>} />
-              </Routes>
+              <Outlet />
             </DashboardLayout>
-          </ProtectedRoute>
+          </ProtectedRoutes>
         }
-      />
+      >
+        <Route
+          index
+          element={<Navigate to={PRIVATE_ROUTES.dashboard} replace />}
+        />
+        <Route path="dashboard" element={<div>Dashboard</div>} />
+        <Route path="teachers" element={<div>Teachers</div>} />
+        <Route path="students" element={<div>Students</div>} />
+        <Route
+          path="practice/listening"
+          element={<div>Listening Practice</div>}
+        />
+      </Route>
     </Routes>
   );
 }
@@ -82,6 +97,7 @@ function App() {
         <BrowserRouter>
           <AppContent />
         </BrowserRouter>
+        <NavigationProgress />
       </MantineProvider>
     </QueryClientProvider>
   );

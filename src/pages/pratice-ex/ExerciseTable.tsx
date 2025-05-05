@@ -5,7 +5,7 @@ import {
   IconEye,
   IconDotsVertical,
 } from "@tabler/icons-react";
-import DataTable, { Column } from "../../components/common/DataTable";
+import DataTable, { Column } from "../../components/DataTable";
 import {
   ListeningExercise,
   ListeningExerciseWithIndex,

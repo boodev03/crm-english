@@ -21,7 +21,9 @@ import {
 } from "@tabler/icons-react";
 import { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { logoutUser } from "../api/auth.api";
+import { logout } from "../../supabase/auth/auth.service";
+import { PUBLIC_ROUTES } from "../../routes/route";
+import { nprogress } from "@mantine/nprogress";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -47,10 +49,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const handleLogout = async () => {
     try {
-      await logoutUser();
-      navigate("/login");
+      nprogress.start();
+      const { error } = await logout();
+      if (error) throw error;
+      navigate(PUBLIC_ROUTES.auth.login);
     } catch (error) {
       console.error("Logout failed:", error);
+    } finally {
+      nprogress.complete();
     }
   };
 
@@ -85,7 +91,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <Group justify="space-between" style={{ flex: 1 }}>
             <UnstyledButton component={Link} to="/dashboard">
               <Text size="xl" fw={700} c={theme.primaryColor}>
-                CRM English
+                EngStudy
               </Text>
             </UnstyledButton>
           </Group>

@@ -15,7 +15,8 @@ import { useForm } from "@mantine/form";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerUser } from "../../api/auth.api";
+import { register } from "../../supabase/auth/auth.service";
+import { PUBLIC_ROUTES } from "../../routes/route";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -41,11 +42,13 @@ const Register = () => {
     setLoading(true);
 
     try {
-      await registerUser({
+      const { error } = await register({
         email: values.email,
         password: values.password,
-        role: values.role,
+        metadata: { role: values.role },
       });
+
+      if (error) throw error;
 
       // Redirect to dashboard
       navigate("/dashboard", { replace: true });
@@ -116,7 +119,10 @@ const Register = () => {
 
           <Group justify="center" mt="md">
             <Text size="sm">Already have an account?</Text>
-            <Button variant="subtle" onClick={() => navigate("/login")}>
+            <Button
+              variant="subtle"
+              onClick={() => navigate(PUBLIC_ROUTES.auth.login)}
+            >
               Sign in
             </Button>
           </Group>

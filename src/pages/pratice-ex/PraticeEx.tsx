@@ -1,7 +1,7 @@
 import { Box, Container, Loader, Modal, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useState } from "react";
-import { FilterOption, TableHeader } from "../../components/common/TableHeader";
+import { FilterOption, TableHeader } from "../../components/TableHeader";
 import { useCategories } from "../../hooks/useCategories";
 import { useListening } from "../../hooks/useListening";
 import { uploadAudioFile } from "../../supabase/upload-service";

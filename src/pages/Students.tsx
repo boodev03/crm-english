@@ -6,8 +6,8 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { useState } from "react";
-import DataTable from "../components/common/DataTable";
-import TableHeader, { FilterOption } from "../components/common/TableHeader";
+import DataTable from "../components/DataTable";
+import TableHeader, { FilterOption } from "../components/TableHeader";
 
 // Type for Student data
 interface Student {
