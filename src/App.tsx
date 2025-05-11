@@ -23,6 +23,8 @@ import Register from "./pages/login/Register";
 import { PRIVATE_ROUTES } from "./routes/route";
 import { useInitializeAuth } from "./stores/useAuthStore";
 
+import Test from "./pages/test/Test";
+
 const myColor: MantineColorsTuple = [
   "#fff1e2",
   "#ffe1cc",
@@ -53,6 +55,7 @@ function AppContent() {
 
   return (
     <Routes>
+      <Route path="/test" element={<Test />} />
       <Route
         path="/auth"
         element={
