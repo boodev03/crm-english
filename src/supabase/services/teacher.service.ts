@@ -7,7 +7,8 @@ export class TeacherService implements ITeacherService {
         try {
             const { data, error } = await supabase
                 .from('teachers')
-                .select('*');
+                .select('*')
+                .order('created_at', { ascending: false });
 
             if (error) throw error;
             return { data: data as Teacher[], error: null };

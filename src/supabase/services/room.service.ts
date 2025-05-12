@@ -7,7 +7,8 @@ export class RoomService implements IRoomService {
         try {
             const { data, error } = await supabase
                 .from('rooms')
-                .select('*');
+                .select('*')
+                .order('created_at', { ascending: false });
 
             if (error) throw error;
             return { data: data as Room[], error: null };

@@ -69,7 +69,6 @@ export function TableHeader({
           <Button
             leftSection={<IconPlus size={16} />}
             onClick={addButton.onClick}
-            color="blue"
           >
             {addButton.label}
           </Button>

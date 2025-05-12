@@ -1,4 +1,5 @@
-import { Course, ScheduleOfCourse } from "../dto/course.dto";
+import { Course } from "../../types/courses";
+import { CreateCourseDto, ScheduleOfCourse } from "../dto/course.dto";
 import { LessonDetail } from "../dto/lesson_detail.dto";
 export interface ICourseService {
   createScheduleOfCourse(
@@ -9,11 +10,11 @@ export interface ICourseService {
     id: string
   ): Promise<{ data: Course | null; error: Error | null }>;
   createCourse(
-    courseData: Omit<Course, "id" | "created_at">
+    courseData: Omit<CreateCourseDto, "id" | "created_at">
   ): Promise<{ data: Course | null; error: Error | null }>;
   updateCourse(
     id: string,
-    courseData: Partial<Omit<Course, "id" | "created_at">>
+    courseData: Partial<Omit<CreateCourseDto, "id" | "created_at">>
   ): Promise<{ data: Course | null; error: Error | null }>;
   deleteCourse(id: string): Promise<{ success: boolean; error: Error | null }>;
 }
