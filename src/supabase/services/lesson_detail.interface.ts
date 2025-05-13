@@ -1,6 +1,7 @@
 import {
   LessonDetail,
   GetLessonDetailByStudentId,
+  GetLessonDetailByTeacherId
 } from "../dto/lesson_detail.dto";
 
 export interface ILessonDetailService {
@@ -9,5 +10,8 @@ export interface ILessonDetailService {
   ): Promise<{ data: LessonDetail | null; error: Error | null }>;
   getLessonDetailByStudentId(
     params: GetLessonDetailByStudentId
+  ): Promise<{ data: LessonDetail[] | null; error: Error | null }>;
+  getLessonDetailByTeacherId(
+    params: GetLessonDetailByTeacherId
   ): Promise<{ data: LessonDetail[] | null; error: Error | null }>;
 }

@@ -14,3 +14,9 @@ export interface GetLessonDetailByStudentId {
     start_time: Date;
     end_time: Date;
 }
+
+export interface GetLessonDetailByTeacherId {
+    teacher_id: string;
+    start_time: Date;
+    end_time: Date;
+}
