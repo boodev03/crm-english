@@ -8,3 +8,9 @@ export interface LessonDetail {
     end_time: Date;
     status: string; // ['Chưa diễn ra', 'Hoàn thành', 'Hủy lịch']
 } 
+
+export interface GetLessonDetailByStudentId {
+    student_id: string;
+    start_time: Date;
+    end_time: Date;
+}
