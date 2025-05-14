@@ -1,4 +1,4 @@
-import { Button, Group, Modal, Stack, Text, Title } from "@mantine/core";
+import { Button, Group, Modal, Stack, Text } from "@mantine/core";
 
 interface ConfirmationProps {
   opened: boolean;
@@ -27,7 +27,11 @@ export default function Confirmation({
     <Modal
       opened={opened}
       onClose={onClose}
-      title={<Title order={3}>{title}</Title>}
+      title={
+        <Text fw={600} size="lg">
+          {title}
+        </Text>
+      }
       centered
     >
       <Stack>

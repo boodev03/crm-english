@@ -48,13 +48,33 @@ export class EnrollmentService implements IEnrollmentService {
         .from("enrollments")
         .delete()
         .eq("id", id);
-
       if (error) throw error;
       return { success: true, error: null };
     } catch (error) {
       return { success: false, error: error as Error };
     }
   }
+
+  async getAllStudentsByCourseId(
+    courseId: string
+  ): Promise<{ data: EnrollmentDto[] | null; error: Error | null }> {
+    try {
+      const { data, error } = await supabase
+        .from("enrollments")
+        .select(`
+          *,
+          student:students(*)
+        `)
+        .eq("course_id", courseId);
+
+      if (error) throw error;
+      return { data: data as EnrollmentDto[], error: null };
+    } catch (error) {
+      return { data: null, error: error as Error };
+    }
+  }
+
+
 }
 
 export const enrollmentService = new EnrollmentService();

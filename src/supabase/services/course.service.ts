@@ -72,7 +72,7 @@ export class CourseService implements ICourseService {
     try {
       const { data, error } = await supabase
         .from("courses")
-        .select("*, teacher:teachers(*), lesson_details(*, room:rooms(*), teacher:teachers(*))")
+        .select("*, teacher:teachers(*), lesson_details(*, room:rooms(*), teacher:teachers(*)), enrollments(*, student:students(*))")
         .eq("id", id)
         .single();
       if (error) throw error;

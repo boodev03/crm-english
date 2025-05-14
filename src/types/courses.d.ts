@@ -1,3 +1,4 @@
+import { Enrollment } from "./enrollment";
 import { Room } from "./room";
 import { Teacher } from "./teacher";
 
@@ -28,6 +29,7 @@ export interface Course {
     // Other fields for join
     teacher?: Teacher
     lesson_details?: LessonDetail[]
+    enrollments?: Enrollment[]
 }
 
 export interface ScheduleOfCourse {
