@@ -7,7 +7,8 @@ export class StudentService implements IStudentService {
         try {
             const { data, error } = await supabase
                 .from('students')
-                .select('*');
+                .select('*')
+                .order('created_at', { ascending: false });
 
             if (error) throw error;
             return { data: data as Student[], error: null };

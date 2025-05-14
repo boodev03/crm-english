@@ -6,27 +6,42 @@ import { supabase } from '../supabase/client';
 interface AuthState {
     session: Session | null;
     user: User | null;
+    isLoading: boolean;
     setSession: (session: Session | null) => void;
     setUser: (user: User | null) => void;
+    setLoading: (isLoading: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
     session: null,
     user: null,
+    isLoading: true,
     setSession: (session) => set({ session }),
     setUser: (user) => set({ user }),
+    setLoading: (isLoading) => set({ isLoading }),
 }));
 
 // Hook to initialize auth state and listen for changes
 export const useInitializeAuth = () => {
-    const { setSession, setUser } = useAuthStore();
+    const { setSession, setUser, setLoading } = useAuthStore();
 
     useEffect(() => {
-        // Get initial session
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session);
-            setUser(session?.user || null);
-        });
+        const initializeAuth = async () => {
+            try {
+                // Get initial session
+                const session = await supabase.auth.getSession();
+                setSession(session.data.session);
+                setUser(session.data.session?.user || null);
+            } catch (error) {
+                console.error('Failed to initialize auth:', error);
+                setSession(null);
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        initializeAuth();
 
         // Listen for auth changes
         const {
@@ -37,5 +52,5 @@ export const useInitializeAuth = () => {
         });
 
         return () => subscription.unsubscribe();
-    }, [setSession, setUser]);
+    }, [setSession, setUser, setLoading]);
 };

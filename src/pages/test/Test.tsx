@@ -1,30 +1,14 @@
 import { Button, Code, Container, Paper, Title } from "@mantine/core";
 import { useState } from "react";
 
-import { courseService } from "../../supabase/services/course.service";
+import { enrollmentService } from "../../supabase/services/enrollment.service";
 
 export default function Test() {
   const [res, setRes] = useState<unknown>(null);
   const handleClick = async () => {
-    const course_id = "42c42a31-b656-4d1c-8b38-8df9e5c48415";
-    const schedules = [
-      {
-        day_of_week: 1,
-        start_time: "15:00",
-        end_time: "16:30",
-        room_id: "1",
-      },
-      {
-        day_of_week: 2,
-        start_time: "9:00",
-        end_time: "10:30",
-        room_id: "3",
-      }
-    ];
-    const res = await courseService.createScheduleOfCourse(
-      course_id,
-      schedules
-    );
+    const course_id = "2232ef8b-bf97-4c2e-8048-d047ee2a5183";
+    const student_id = "f685221d-2045-49f7-8fca-4aa179fcbece";
+    const enrollment_id = "3dd242b1-5e25-4285-b7e7-55c468771269";
 
     setRes(res);
   };

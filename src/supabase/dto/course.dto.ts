@@ -1,4 +1,4 @@
-export interface Course {
+export interface CreateCourseDto {
     id: string;
     created_at: Date;
     course_name: string;
@@ -6,7 +6,7 @@ export interface Course {
     end_time: Date;
     tuition: number;
     teacher_id: string;
-} 
+}
 
 export interface ScheduleOfCourse {
     day_of_week: number; // 0: Sunday, 1: Monday, 2: Tuesday, 3: Wednesday, 4: Thursday, 5: Friday, 6: Saturday 

@@ -1,5 +1,6 @@
+import { Course } from "../../types/courses";
 import { supabase } from "../client";
-import { Course, ScheduleOfCourse } from "../dto/course.dto";
+import { CreateCourseDto, ScheduleOfCourse } from "../dto/course.dto";
 import { LessonDetail } from "../dto/lesson_detail.dto";
 import { ICourseService } from "./course.interface";
 import { lessonDetailService } from "./lesson_detail.service";
@@ -31,7 +32,7 @@ export class CourseService implements ICourseService {
         date = date.add(1, "day")
       ) {
         // Tìm ngày trùng thứ mấy trong tuần
-        if (dayjs(date).day() === schedule.day_of_week) {
+        if (dayjs(date).day() == schedule.day_of_week) {
           // Tạo lesson detail
           const lessonDetail = {
             course_id: courseId,
@@ -64,14 +65,14 @@ export class CourseService implements ICourseService {
 
     return { data: lessonDetails, error: null };
   }
-  
+
   async getCourseById(
     id: string
   ): Promise<{ data: Course | null; error: Error | null }> {
     try {
       const { data, error } = await supabase
         .from("courses")
-        .select("*")
+        .select("*, teacher:teachers(*), lesson_details(*, room:rooms(*), teacher:teachers(*)), enrollments(*, student:students(*))")
         .eq("id", id)
         .single();
       if (error) throw error;
@@ -82,7 +83,7 @@ export class CourseService implements ICourseService {
   }
 
   async createCourse(
-    courseData: Omit<Course, "id" | "created_at">
+    courseData: Omit<CreateCourseDto, "id" | "created_at">
   ): Promise<{ data: Course | null; error: Error | null }> {
     try {
       const { data, error } = await supabase
@@ -100,7 +101,7 @@ export class CourseService implements ICourseService {
 
   async updateCourse(
     id: string,
-    courseData: Partial<Omit<Course, "id" | "created_at">>
+    courseData: Partial<Omit<CreateCourseDto, "id" | "created_at">>
   ): Promise<{ data: Course | null; error: Error | null }> {
     try {
       const { data, error } = await supabase
@@ -127,6 +128,19 @@ export class CourseService implements ICourseService {
       return { success: true, error: null };
     } catch (error) {
       return { success: false, error: error as Error };
+    }
+  }
+
+  async getAllCourses(): Promise<{ data: Course[] | null; error: Error | null }> {
+    try {
+      const { data, error } = await supabase
+        .from("courses")
+        .select("*, teacher:teachers(*)")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return { data: data as Course[], error: null };
+    } catch (error) {
+      return { data: null, error: error as Error };
     }
   }
 }

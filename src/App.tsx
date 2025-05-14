@@ -4,6 +4,7 @@ import {
   MantineProvider,
 } from "@mantine/core";
 import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
 import { NavigationProgress } from "@mantine/nprogress";
 import "@mantine/nprogress/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -20,10 +21,19 @@ import ProtectedRoutes from "./components/layouts/ProtectedRoutes";
 import PublicRoutes from "./components/layouts/PublicRoutes";
 import Login from "./pages/login/Login";
 import Register from "./pages/login/Register";
-import { PRIVATE_ROUTES } from "./routes/route";
 import { useInitializeAuth } from "./stores/useAuthStore";
 
+import dayjs from "dayjs";
+import Courses from "./pages/courses/Courses";
+import Rooms from "./pages/room/Room";
+import Students from "./pages/students/Students";
+import Teachers from "./pages/teachers/Teachers";
 import Test from "./pages/test/Test";
+
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import CourseDetail from "./pages/courses/CourseDetail";
 
 const myColor: MantineColorsTuple = [
   "#fff1e2",
@@ -49,6 +59,10 @@ const theme = createTheme({
 // Create a client
 const queryClient = new QueryClient();
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(localizedFormat);
+
 function AppContent() {
   // Initialize auth state
   useInitializeAuth();
@@ -67,28 +81,77 @@ function AppContent() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
       </Route>
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route
-        path="/"
+        path="/dashboard"
         element={
           <ProtectedRoutes>
             <DashboardLayout>
-              <Outlet />
+              <div>Dashboard</div>
             </DashboardLayout>
           </ProtectedRoutes>
         }
-      >
-        <Route
-          index
-          element={<Navigate to={PRIVATE_ROUTES.dashboard} replace />}
-        />
-        <Route path="dashboard" element={<div>Dashboard</div>} />
-        <Route path="teachers" element={<div>Teachers</div>} />
-        <Route path="students" element={<div>Students</div>} />
-        <Route
-          path="practice/listening"
-          element={<div>Listening Practice</div>}
-        />
-      </Route>
+      />
+      <Route
+        path="/teachers"
+        element={
+          <ProtectedRoutes>
+            <DashboardLayout>
+              <Teachers />
+            </DashboardLayout>
+          </ProtectedRoutes>
+        }
+      />
+      <Route
+        path="/students"
+        element={
+          <ProtectedRoutes>
+            <DashboardLayout>
+              <Students />
+            </DashboardLayout>
+          </ProtectedRoutes>
+        }
+      />
+      <Route
+        path="/practice/listening"
+        element={
+          <ProtectedRoutes>
+            <DashboardLayout>
+              <div>Listening Practice</div>
+            </DashboardLayout>
+          </ProtectedRoutes>
+        }
+      />
+      <Route
+        path="/rooms"
+        element={
+          <ProtectedRoutes>
+            <DashboardLayout>
+              <Rooms />
+            </DashboardLayout>
+          </ProtectedRoutes>
+        }
+      />
+      <Route
+        path="/courses"
+        element={
+          <ProtectedRoutes>
+            <DashboardLayout>
+              <Courses />
+            </DashboardLayout>
+          </ProtectedRoutes>
+        }
+      />
+      <Route
+        path="/courses/:id"
+        element={
+          <ProtectedRoutes>
+            <DashboardLayout>
+              <CourseDetail />
+            </DashboardLayout>
+          </ProtectedRoutes>
+        }
+      />
     </Routes>
   );
 }
