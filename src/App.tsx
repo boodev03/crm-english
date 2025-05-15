@@ -34,6 +34,8 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import CourseDetail from "./pages/courses/CourseDetail";
+import { UserAccounts } from "./pages/user-accounts/UserAccounts";
+import PraticeEx from "./pages/pratice-ex/PraticeEx";
 
 const myColor: MantineColorsTuple = [
   "#fff1e2",
@@ -117,7 +119,7 @@ function AppContent() {
         element={
           <ProtectedRoutes>
             <DashboardLayout>
-              <div>Listening Practice</div>
+              <PraticeEx />
             </DashboardLayout>
           </ProtectedRoutes>
         }
@@ -148,6 +150,16 @@ function AppContent() {
           <ProtectedRoutes>
             <DashboardLayout>
               <CourseDetail />
+            </DashboardLayout>
+          </ProtectedRoutes>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <ProtectedRoutes>
+            <DashboardLayout>
+              <UserAccounts />
             </DashboardLayout>
           </ProtectedRoutes>
         }
