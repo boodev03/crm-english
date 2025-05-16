@@ -1,7 +1,16 @@
-import { Button, Group, Modal, Stack, TextInput, Title } from "@mantine/core";
+import {
+  Button,
+  Group,
+  Modal,
+  Stack,
+  TextInput,
+  Title,
+  PasswordInput,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { teacherService } from "../../supabase/services/teacher.service";
+import { register } from "../../supabase/auth/auth.service";
 
 interface AddNewTeacherProps {
   opened: boolean;
@@ -20,26 +29,42 @@ export default function AddNewTeacher({
       last_name: "",
       email: "",
       phone: "",
+      password: "",
     },
     validate: {
       first_name: (value) => (value ? null : "Vui lòng nhập tên"),
       last_name: (value) => (value ? null : "Vui lòng nhập họ"),
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Email không hợp lệ"),
       phone: (value) => (value ? null : "Vui lòng nhập số điện thoại"),
+      password: (value) =>
+        value.length >= 6 ? null : "Mật khẩu phải có ít nhất 6 ký tự",
     },
   });
 
   const handleSubmit = async (values: typeof form.values) => {
     try {
-      const { error } = await teacherService.createTeacher(values);
+      // First create the teacher account
+      const { error: registerError } = await register({
+        email: values.email,
+        password: values.password,
+        metadata: { role: "teacher" },
+      });
 
-      if (error) {
-        throw error;
-      }
+      if (registerError) throw registerError;
+
+      // Then create the teacher profile
+      const { error: teacherError } = await teacherService.createTeacher({
+        first_name: values.first_name,
+        last_name: values.last_name,
+        email: values.email,
+        phone: values.phone,
+      });
+
+      if (teacherError) throw teacherError;
 
       notifications.show({
         title: "Thành công",
-        message: "Thêm giáo viên thành công",
+        message: "Thêm giáo viên và tạo tài khoản thành công",
         color: "green",
       });
 
@@ -83,6 +108,13 @@ export default function AddNewTeacher({
             placeholder="Nhập email"
             type="email"
             {...form.getInputProps("email")}
+          />
+
+          <PasswordInput
+            label="Mật khẩu"
+            placeholder="Nhập mật khẩu"
+            {...form.getInputProps("password")}
+            required
           />
 
           <TextInput
