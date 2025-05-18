@@ -75,6 +75,23 @@ export class StudentService implements IStudentService {
             return { success: false, error: error as Error };
         }
     }
+
+    async getStudentsByCourseId(courseId: string): Promise<{ data: Student[] | null; error: Error | null }> {
+        try {
+            const { data, error } = await supabase
+                .from('enrollments')
+                .select('student:students(*)')
+                .eq('course_id', courseId);
+
+            if (error) throw error;
+            
+            const students = data.map(item => item.student);
+            
+            return { data: students as unknown as Student[], error: null };
+        } catch (error) {
+            return { data: null, error: error as Error };
+        }
+    }
 }
 
 // Export a singleton instance

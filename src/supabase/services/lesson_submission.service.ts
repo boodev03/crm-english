@@ -10,7 +10,7 @@ export class LessonSubmissionService implements ILessonSubmissionService {
         try {
             const { data, error } = await supabase
                 .from("lesson_submissions")
-                .select("*, students(*), lesson_assignments(*)")
+                .select("*, students(*)")
                 .eq("lesson_assignment_id", lessonAssignmentId);
 
             if (error) throw error;

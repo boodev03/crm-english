@@ -1,6 +1,10 @@
 import { LessonSubmission } from "../dto/lesson_submission.dto";
 
 export interface ILessonSubmissionService {
+    getLessonSubmissionsByLessonAssignmentId(
+        lessonAssignmentId: string
+    ): Promise<{ data: LessonSubmission[] | null; error: Error | null }>;
+
     getLessonSubmissionByLessonAssignmentIdAndStudentId(
     lessonAssignmentId: string,
     studentId: string
