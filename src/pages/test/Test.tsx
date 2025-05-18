@@ -1,4 +1,12 @@
-import { Button, Code, Container, FileInput, Paper, Title } from "@mantine/core";
+import {
+  Button,
+  Code,
+  Container,
+  FileInput,
+  Paper,
+  Title,
+  TextInput,
+} from "@mantine/core";
 import { useState } from "react";
 
 // import { enrollmentService } from "../../supabase/services/enrollment.service";
@@ -8,7 +16,8 @@ export default function Test() {
   const [res, setRes] = useState<unknown>(null);
   const [file, setFile] = useState<File | null>(null);
   const [files, setFiles] = useState<File[]>([]);
-  
+  const [fileKey, setFileKey] = useState<string>("");
+
   const handleClick = async () => {
     setRes(res);
   };
@@ -40,6 +49,25 @@ export default function Test() {
     }
   };
 
+  const handleDownloadFile = async () => {
+    if (!fileKey) {
+      setRes("No file key provided");
+      return;
+    }
+    
+    try {
+      const result = await s3Service.downloadFile(fileKey);
+      setRes(result);
+      
+      // If download URL is available, open it in a new tab
+      if (result.downloadUrl) {
+        window.open(result.downloadUrl, '_blank');
+      }
+    } catch (error) {
+      setRes({ error: "Download failed", details: error });
+    }
+  };
+
   return (
     <Container size="md" py="xl">
       <Title order={3} mb="md">
@@ -49,7 +77,7 @@ export default function Test() {
         Test
       </Button>
 
-      <Title order={4} mt="xl" mb="md">Single File Upload</Title>
+      <Title order={4} mt="xl" mb="md">Upload File</Title>
       <FileInput
         placeholder="Choose file"
         label="Upload single file"
@@ -61,7 +89,7 @@ export default function Test() {
         Upload File
       </Button>
 
-      <Title order={4} mt="xl" mb="md">Multiple Files Upload</Title>
+      <Title order={4} mt="xl" mb="md">Upload Multiple Files</Title>
       <FileInput
         placeholder="Choose files"
         label="Upload multiple files"
@@ -74,6 +102,17 @@ export default function Test() {
         Upload Multiple Files
       </Button>
       
+      <Title order={4} mt="xl" mb="md">Download File</Title>
+      <TextInput
+        placeholder="Enter file key (e.g., homeworks/filename.png)"
+        label="File Key"
+        value={fileKey}
+        onChange={(event) => setFileKey(event.currentTarget.value)}
+      />
+      <Button onClick={handleDownloadFile} mt="md" mb="lg">
+        Generate Download Link
+      </Button>
+
       <Paper p="md" withBorder mt="xl">
         <Title order={4} mb="sm">
           Kết quả:

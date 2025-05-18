@@ -1,10 +1,12 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from 'uuid';
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export interface IS3Service {
   uploadFile(file: File): Promise<{ url: string | null; error: Error | null }>;
   uploadMultipleFiles(files: File[]): Promise<{ urls: string[]; errors: Error[] }>;
   deleteFile(fileKey: string): Promise<{ success: boolean; error: Error | null }>;
+  downloadFile(fileKey: string): Promise<{ downloadUrl: string | null; error: Error | null }>;
 }
 
 export class S3Service implements IS3Service {
@@ -84,6 +86,24 @@ export class S3Service implements IS3Service {
     } catch (error) {
       console.error("Error deleting file from S3:", error);
       return { success: false, error: error as Error };
+    }
+  }
+
+  async downloadFile(fileKey: string): Promise<{ downloadUrl: string | null; error: Error | null }> {
+    try {
+      const params = {
+        Bucket: this.bucketName,
+        Key: fileKey
+      };
+
+      const command = new GetObjectCommand(params);
+      
+      const signedUrl = await getSignedUrl(this.s3Client, command, { expiresIn: 900 });
+      
+      return { downloadUrl: signedUrl, error: null };
+    } catch (error) {
+      console.error("Error generating download URL from S3:", error);
+      return { downloadUrl: null, error: error as Error };
     }
   }
 
