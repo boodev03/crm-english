@@ -1,10 +1,11 @@
 import { LessonSubmission } from "../dto/lesson_submission.dto";
 
 export interface ILessonSubmissionService {
-  getLessonSubmissionByLessonAssignmentId(
-    lessonAssignmentId: string
+    getLessonSubmissionByLessonAssignmentIdAndStudentId(
+    lessonAssignmentId: string,
+    studentId: string
   ): Promise<{ data: LessonSubmission | null; error: Error | null }>;
-  
+
   createLessonSubmission(
     submissionData: Omit<LessonSubmission, "id" | "created_at">
   ): Promise<{ data: LessonSubmission | null; error: Error | null }>;

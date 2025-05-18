@@ -17,4 +17,7 @@ export interface ICourseService {
     courseData: Partial<Omit<CreateCourseDto, "id" | "created_at">>
   ): Promise<{ data: Course | null; error: Error | null }>;
   deleteCourse(id: string): Promise<{ success: boolean; error: Error | null }>;
+  getCoursesByTeacherId(
+    teacherId: string
+  ): Promise<{ data: Course[] | null; error: Error | null }>;
 }

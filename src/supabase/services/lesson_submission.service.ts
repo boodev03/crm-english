@@ -1,16 +1,35 @@
 import { supabase } from "../client";
-import { LessonSubmission } from "../dto/lesson_submission.dto";
+import { LessonSubmission,LessonSubmissionWithData  } from "../dto/lesson_submission.dto";
 import { ILessonSubmissionService } from "./lesson_submission.interface";
 
 export class LessonSubmissionService implements ILessonSubmissionService {
-  async getLessonSubmissionByLessonAssignmentId(
-    lessonAssignmentId: string
+
+    async getLessonSubmissionsByLessonAssignmentId(
+        lessonAssignmentId: string
+    ): Promise<{ data: LessonSubmissionWithData[] | null; error: Error | null }> {
+        try {
+            const { data, error } = await supabase
+                .from("lesson_submissions")
+                .select("*, students(*), lesson_assignments(*)")
+                .eq("lesson_assignment_id", lessonAssignmentId);
+
+            if (error) throw error;
+            return { data: data as LessonSubmissionWithData[], error: null };
+        } catch (error) {
+            return { data: null, error: error as Error };
+        }
+    }
+
+  async getLessonSubmissionByLessonAssignmentIdAndStudentId(
+    lessonAssignmentId: string,
+    studentId: string
   ): Promise<{ data: LessonSubmission | null; error: Error | null }> {
     try {
       const { data, error } = await supabase
         .from("lesson_submissions")
         .select("*")
         .eq("lesson_assignment_id", lessonAssignmentId)
+        .eq("student_id", studentId)
         .single();
 
       if (error) throw error;
