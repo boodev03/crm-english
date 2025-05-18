@@ -14,4 +14,7 @@ export interface ILessonDetailService {
   getLessonDetailByTeacherId(
     params: GetLessonDetailByTeacherId
   ): Promise<{ data: LessonDetail[] | null; error: Error | null }>;
+  getLessonDetailByCourseId(
+    courseId: string
+  ): Promise<{ data: LessonDetail[] | null; error: Error | null }>;
 }
