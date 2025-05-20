@@ -6,4 +6,5 @@ export interface IStudentService {
     updateStudent(id: string, studentData: Partial<Omit<Student, 'id'>>): Promise<{ data: Student | null; error: Error | null }>;
     deleteStudent(id: string): Promise<{ success: boolean; error: Error | null }>;
     getStudentsByCourseId(courseId: string): Promise<{ data: Student[] | null; error: Error | null }>;
+    getStudentByEmail(email: string): Promise<{ data: Student | null; error: Error | null }>;
 } 

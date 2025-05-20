@@ -1,22 +1,24 @@
 import { ActionIcon, Container, Menu, Stack } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import {
   IconDotsVertical,
   IconEdit,
   IconEye,
   IconTrash,
+  IconUserPlus,
 } from "@tabler/icons-react";
+import dayjs from "dayjs";
 import { useState } from "react";
+import Confirmation from "../../components/Confirmation";
 import DataTable from "../../components/DataTable";
 import TableHeader from "../../components/TableHeader";
-import { Student } from "../../types/student";
 import { useStudents } from "../../hooks/useStudent";
-import AddNewStudent from "./AddNewStudent";
-import StudentDetail from "./StudentDetail";
-import EditStudent from "./EditStudent";
-import dayjs from "dayjs";
 import { studentService } from "../../supabase/services/student.service";
-import { notifications } from "@mantine/notifications";
-import Confirmation from "../../components/Confirmation";
+import { Student } from "../../types/student";
+import AddNewStudent from "./AddNewStudent";
+import AddStudents from "./AddStudents";
+import EditStudent from "./EditStudent";
+import StudentDetail from "./StudentDetail";
 
 export function Students() {
   const {
@@ -28,6 +30,7 @@ export function Students() {
   const [searchValue, setSearchValue] = useState("");
   const [page, setPage] = useState(1);
   const [addStudentDialogOpen, setAddStudentDialogOpen] = useState(false);
+  const [addStudentsDialogOpen, setAddStudentsDialogOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [studentDetailOpen, setStudentDetailOpen] = useState(false);
   const [editStudentOpen, setEditStudentOpen] = useState(false);
@@ -56,6 +59,10 @@ export function Students() {
   // Action handlers
   const handleAddStudent = () => {
     setAddStudentDialogOpen(true);
+  };
+
+  const handleAddStudents = () => {
+    setAddStudentsDialogOpen(true);
   };
 
   const handleEdit = (student: Student) => {
@@ -133,6 +140,11 @@ export function Students() {
             label: "Thêm học viên",
             onClick: handleAddStudent,
           }}
+          extraButton={{
+            label: "Nhập từ File",
+            onClick: handleAddStudents,
+            leftSection: <IconUserPlus size={16} />,
+          }}
         />
 
         <DataTable
@@ -188,6 +200,12 @@ export function Students() {
         <AddNewStudent
           opened={addStudentDialogOpen}
           onClose={() => setAddStudentDialogOpen(false)}
+          onSuccess={refetch}
+        />
+
+        <AddStudents
+          opened={addStudentsDialogOpen}
+          onClose={() => setAddStudentsDialogOpen(false)}
           onSuccess={refetch}
         />
 

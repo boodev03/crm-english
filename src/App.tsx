@@ -5,6 +5,7 @@ import {
 } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
+import "@mantine/notifications/styles.css";
 import { NavigationProgress } from "@mantine/nprogress";
 import "@mantine/nprogress/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -36,6 +37,7 @@ import utc from "dayjs/plugin/utc";
 import CourseDetail from "./pages/courses/CourseDetail";
 import { UserAccounts } from "./pages/user-accounts/UserAccounts";
 import PraticeEx from "./pages/pratice-ex/PraticeEx";
+import { Notifications } from "@mantine/notifications";
 
 const myColor: MantineColorsTuple = [
   "#fff1e2",
@@ -176,6 +178,7 @@ function App() {
           <AppContent />
         </BrowserRouter>
         <NavigationProgress />
+        <Notifications position="top-right" />
       </MantineProvider>
     </QueryClientProvider>
   );
