@@ -1,7 +1,16 @@
-import { Button, Group, Modal, Stack, TextInput, Title } from "@mantine/core";
+import {
+  Button,
+  Group,
+  Modal,
+  Stack,
+  TextInput,
+  Title,
+  PasswordInput,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { studentService } from "../../supabase/services/student.service";
+import { register } from "../../supabase/auth/auth.service";
 
 interface AddNewStudentProps {
   opened: boolean;
@@ -20,26 +29,42 @@ export default function AddNewStudent({
       last_name: "",
       email: "",
       phone: "",
+      password: "",
     },
     validate: {
       first_name: (value) => (value ? null : "Vui lòng nhập tên"),
       last_name: (value) => (value ? null : "Vui lòng nhập họ"),
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Email không hợp lệ"),
       phone: (value) => (value ? null : "Vui lòng nhập số điện thoại"),
+      password: (value) =>
+        value.length >= 6 ? null : "Mật khẩu phải có ít nhất 6 ký tự",
     },
   });
 
   const handleSubmit = async (values: typeof form.values) => {
     try {
-      const { error } = await studentService.createStudent(values);
+      // First create the student account
+      const { error: registerError } = await register({
+        email: values.email,
+        password: values.password,
+        metadata: { role: "student" },
+      });
 
-      if (error) {
-        throw error;
-      }
+      if (registerError) throw registerError;
+
+      // Then create the student profile
+      const { error: studentError } = await studentService.createStudent({
+        first_name: values.first_name,
+        last_name: values.last_name,
+        email: values.email,
+        phone: values.phone,
+      });
+
+      if (studentError) throw studentError;
 
       notifications.show({
         title: "Thành công",
-        message: "Thêm học viên thành công",
+        message: "Thêm học viên và tạo tài khoản thành công",
         color: "green",
       });
 
@@ -79,15 +104,22 @@ export default function AddNewStudent({
           />
 
           <TextInput
+            label="Số điện thoại"
+            placeholder="Nhập số điện thoại"
+            {...form.getInputProps("phone")}
+          />
+
+          <TextInput
             label="Email"
             placeholder="hocvien@example.com"
             {...form.getInputProps("email")}
           />
 
-          <TextInput
-            label="Số điện thoại"
-            placeholder="Nhập số điện thoại"
-            {...form.getInputProps("phone")}
+          <PasswordInput
+            label="Mật khẩu"
+            placeholder="Nhập mật khẩu"
+            {...form.getInputProps("password")}
+            required
           />
 
           <Group justify="flex-end" mt="md">

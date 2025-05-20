@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { supabase } from "../client";
+import { UserMetadata } from "@supabase/supabase-js";
+import { supabase, supabaseAdmin } from "../client";
 
 export const login = async ({ email, password }: { email: string, password: string }) => {
     try {
@@ -25,7 +25,7 @@ export const logout = async () => {
     }
 };
 
-export const register = async ({ email, password, metadata }: { email: string, password: string, metadata: any }) => {
+export const register = async ({ email, password, metadata }: { email: string, password: string, metadata: UserMetadata }) => {
     try {
         const { data, error } = await supabase.auth.signUp({
             email,
@@ -52,10 +52,6 @@ export const getUser = async () => {
     }
 };
 
-/**
- * Get the current session
- * @returns Session data or null
- */
 export const getSession = async () => {
     try {
         const { data, error } = await supabase.auth.getSession();
@@ -63,5 +59,15 @@ export const getSession = async () => {
         return { session: data.session, error: null };
     } catch (error) {
         return { session: null, error };
+    }
+};
+
+export const getUsers = async () => {
+    try {
+        const { data, error } = await supabaseAdmin.auth.admin.listUsers();
+        if (error) throw error;
+        return { data, error: null };
+    } catch (error) {
+        return { data: null, error };
     }
 };

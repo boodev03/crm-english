@@ -1,3 +1,5 @@
+import { Course } from "../../types/courses";
+
 export interface EnrollmentDto {
     id: string;
     created_at?: Date;
@@ -6,3 +8,6 @@ export interface EnrollmentDto {
     status?: string; // ['unpaid', 'paid']
 }
 
+export interface EnrollmentWithCourse extends EnrollmentDto {
+    course: Course;
+}

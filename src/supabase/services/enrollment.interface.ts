@@ -1,4 +1,4 @@
-import { EnrollmentDto } from "../dto/enrollment.dto";
+import { EnrollmentDto, EnrollmentWithCourse } from "../dto/enrollment.dto";
 
 export interface IEnrollmentService {
   createEnrollment(
@@ -11,4 +11,7 @@ export interface IEnrollmentService {
   deleteEnrollment(
     id: string
   ): Promise<{ success: boolean; error: Error | null }>;
+  getEnrollmentsByStudentId(
+    studentId: string
+  ): Promise<{ data: EnrollmentWithCourse[] | null; error: Error | null }>;
 }

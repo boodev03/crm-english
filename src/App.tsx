@@ -5,6 +5,7 @@ import {
 } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
+import "@mantine/notifications/styles.css";
 import { NavigationProgress } from "@mantine/nprogress";
 import "@mantine/nprogress/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -34,6 +35,9 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import CourseDetail from "./pages/courses/CourseDetail";
+import { UserAccounts } from "./pages/user-accounts/UserAccounts";
+import PraticeEx from "./pages/pratice-ex/PraticeEx";
+import { Notifications } from "@mantine/notifications";
 
 const myColor: MantineColorsTuple = [
   "#fff1e2",
@@ -117,7 +121,7 @@ function AppContent() {
         element={
           <ProtectedRoutes>
             <DashboardLayout>
-              <div>Listening Practice</div>
+              <PraticeEx />
             </DashboardLayout>
           </ProtectedRoutes>
         }
@@ -152,6 +156,16 @@ function AppContent() {
           </ProtectedRoutes>
         }
       />
+      <Route
+        path="/users"
+        element={
+          <ProtectedRoutes>
+            <DashboardLayout>
+              <UserAccounts />
+            </DashboardLayout>
+          </ProtectedRoutes>
+        }
+      />
     </Routes>
   );
 }
@@ -164,6 +178,7 @@ function App() {
           <AppContent />
         </BrowserRouter>
         <NavigationProgress />
+        <Notifications position="top-right" />
       </MantineProvider>
     </QueryClientProvider>
   );

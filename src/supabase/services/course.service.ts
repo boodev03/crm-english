@@ -143,6 +143,22 @@ export class CourseService implements ICourseService {
       return { data: null, error: error as Error };
     }
   }
+
+  async getCoursesByTeacherId(
+    teacherId: string
+  ): Promise<{ data: Course[] | null; error: Error | null }> {
+    try {
+      const { data, error } = await supabase
+        .from("courses")
+        .select("*")
+        .eq("teacher_id", teacherId);
+      if (error) throw error;
+      return { data: data as Course[], error: null };
+    } catch (error) {
+      return { data: null, error: error as Error };
+    }
+  }
+    
 }
 
 // Export a singleton instance

@@ -15,7 +15,7 @@ import {
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCourseById } from "../../hooks/useCourseById";
-import AddStudentToCourse from "./AddStudentToCourse";
+import AddStudentsToCourse from "./AddStudentsToCourse";
 import CourseInformation from "./CourseInformation";
 import CourseSchedules from "./CourseSchedules";
 import CourseStudentList from "./CourseStudentList";
@@ -72,12 +72,14 @@ export default function CourseDetail() {
       >
         <Group justify="space-between" mb="md">
           <Title order={2}>{course.course_name}</Title>
-          <Button
-            leftSection={<IconUserPlus size={16} />}
-            onClick={() => setAddStudentModalOpened(true)}
-          >
-            Thêm học viên
-          </Button>
+          <Group>
+            <Button
+              leftSection={<IconUserPlus size={16} />}
+              onClick={() => setAddStudentModalOpened(true)}
+            >
+              Thêm học viên
+            </Button>
+          </Group>
         </Group>
 
         <CourseInformation course={course} />
@@ -85,7 +87,7 @@ export default function CourseDetail() {
         <CourseStudentList course={course} refetch={refetch} />
       </Paper>
 
-      <AddStudentToCourse
+      <AddStudentsToCourse
         opened={addStudentModalOpened}
         onClose={() => setAddStudentModalOpened(false)}
         courseId={course.id}

@@ -1,18 +1,20 @@
+import { Group, ScrollArea, Text } from "@mantine/core";
 import {
   IconBook,
   IconBuildingSkyscraper,
   IconDashboard,
   IconHeadphones,
+  IconUser,
   IconUserCheck,
   IconUserPlus,
 } from "@tabler/icons-react";
-import { Group, ScrollArea, Text } from "@mantine/core";
-import classes from "./NavbarNested.module.css";
 import { LinksGroup } from "../navbar-linkgroup/NavbarLinksGroup";
 import { UserButton } from "./LogoutButton";
+import classes from "./NavbarNested.module.css";
 
 const navItems = [
   { label: "Trang chủ", icon: IconDashboard, link: "/dashboard" },
+  { label: "Tài khoản", icon: IconUser, link: "/users" },
   { label: "Giáo viên", icon: IconUserCheck, link: "/teachers" },
   { label: "Học viên", icon: IconUserPlus, link: "/students" },
   { label: "Phòng học", icon: IconBuildingSkyscraper, link: "/rooms" },

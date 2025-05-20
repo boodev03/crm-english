@@ -29,6 +29,11 @@ interface TableHeaderProps {
     label: string;
     onClick: () => void;
   };
+  extraButton?: {
+    label: string;
+    onClick: () => void;
+    leftSection?: React.ReactNode;
+  };
 }
 
 export function TableHeader({
@@ -39,6 +44,7 @@ export function TableHeader({
   filters = [],
   onClearFilters,
   addButton,
+  extraButton,
 }: TableHeaderProps) {
   const [filterOpened, setFilterOpened] = React.useState(false);
 
@@ -65,14 +71,25 @@ export function TableHeader({
             {title}
           </Text>
         )}
-        {addButton && (
-          <Button
-            leftSection={<IconPlus size={16} />}
-            onClick={addButton.onClick}
-          >
-            {addButton.label}
-          </Button>
-        )}
+        <Group>
+          {extraButton && (
+            <Button
+              variant="light"
+              onClick={extraButton.onClick}
+              leftSection={extraButton.leftSection}
+            >
+              {extraButton.label}
+            </Button>
+          )}
+          {addButton && (
+            <Button
+              leftSection={<IconPlus size={16} />}
+              onClick={addButton.onClick}
+            >
+              {addButton.label}
+            </Button>
+          )}
+        </Group>
       </Group>
 
       <Group justify="space-between">

@@ -1,5 +1,5 @@
 import { supabase } from "../client";
-import { EnrollmentDto } from "../dto/enrollment.dto";
+import { EnrollmentDto, EnrollmentWithCourse } from "../dto/enrollment.dto";
 import { IEnrollmentService } from "./enrollment.interface";
 
 export class EnrollmentService implements IEnrollmentService {
@@ -74,7 +74,24 @@ export class EnrollmentService implements IEnrollmentService {
     }
   }
 
+  async getEnrollmentsByStudentId(
+    studentId: string
+  ): Promise<{ data: EnrollmentWithCourse[] | null; error: Error | null }> {
+    try {
+      const { data, error } = await supabase
+        .from("enrollments")
+        .select(`
+          *,
+          course:courses(*)
+        `)
+        .eq("student_id", studentId);
 
+      if (error) throw error;
+      return { data: data as EnrollmentWithCourse[], error: null };
+    } catch (error) {
+      return { data: null, error: error as Error };
+    }
+  }
 }
 
 export const enrollmentService = new EnrollmentService();
