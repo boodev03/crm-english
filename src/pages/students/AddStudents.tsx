@@ -1,19 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Button,
-  Group,
-  Modal,
-  Stack,
-  Title,
-  FileInput,
-  Text,
-} from "@mantine/core";
+import { Button, FileInput, Group, Modal, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { studentService } from "../../supabase/services/student.service";
-import { register } from "../../supabase/auth/auth.service";
-import * as XLSX from "xlsx";
 import { useState } from "react";
+import * as XLSX from "xlsx";
+import { register } from "../../supabase/auth/auth.service";
+import { studentService } from "../../supabase/services/student.service";
 
 const DEFAULT_PASSWORD = "12345678";
 
