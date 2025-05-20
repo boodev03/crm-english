@@ -38,6 +38,7 @@ import CourseDetail from "./pages/courses/CourseDetail";
 import { UserAccounts } from "./pages/user-accounts/UserAccounts";
 import PraticeEx from "./pages/pratice-ex/PraticeEx";
 import { Notifications } from "@mantine/notifications";
+import Dashboard from "./pages/Dashboard";
 
 const myColor: MantineColorsTuple = [
   "#fff1e2",
@@ -91,7 +92,7 @@ function AppContent() {
         element={
           <ProtectedRoutes>
             <DashboardLayout>
-              <div>Dashboard</div>
+              <Dashboard />
             </DashboardLayout>
           </ProtectedRoutes>
         }
