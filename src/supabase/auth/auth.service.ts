@@ -27,12 +27,11 @@ export const logout = async () => {
 
 export const register = async ({ email, password, metadata }: { email: string, password: string, metadata: UserMetadata }) => {
     try {
-        const { data, error } = await supabase.auth.signUp({
+        const { data, error } = await supabaseAdmin.auth.admin.createUser({
             email,
             password,
-            options: {
-                data: metadata,
-            },
+            user_metadata: metadata,
+            email_confirm: true,
         });
 
         if (error) throw error;
