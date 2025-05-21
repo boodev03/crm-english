@@ -1,12 +1,7 @@
 import { ActionIcon, Badge, Container, Menu, Stack } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { User } from "@supabase/supabase-js";
-import {
-  IconDotsVertical,
-  IconEdit,
-  IconEye,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconDotsVertical, IconTrash } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { useState } from "react";
 import Confirmation from "../../components/Confirmation";
@@ -14,6 +9,7 @@ import DataTable from "../../components/DataTable";
 import TableHeader from "../../components/TableHeader";
 import { useUserAccounts } from "../../hooks/useUserAccounts";
 import AddNewAccount from "./AddNewAccount";
+import { deleteUser } from "../../supabase/auth/auth.service";
 
 export function UserAccounts() {
   const {
@@ -68,13 +64,6 @@ export function UserAccounts() {
     },
   ];
 
-  // Action handlers
-  const handleEdit = (user: User) => {
-    setSelectedUser(user);
-    // TODO: Implement edit user modal
-    console.log("Edit user:", user);
-  };
-
   const handleDeleteClick = (user: User) => {
     setSelectedUser(user);
     setDeleteConfirmOpen(true);
@@ -86,12 +75,12 @@ export function UserAccounts() {
     setDeleteLoading(true);
     try {
       // TODO: Implement delete user API call
-      // const { success, error } = await userService.deleteUser(selectedUser.id);
-
+      await deleteUser(selectedUser.id);
+      refetch();
       notifications.show({
-        title: "Cảnh báo",
-        message: "Chức năng xóa người dùng chưa được triển khai",
-        color: "orange",
+        title: "Thành công",
+        message: "Tài khoản đã được xóa thành công",
+        color: "green",
       });
     } catch (error) {
       notifications.show({
@@ -104,12 +93,6 @@ export function UserAccounts() {
       setDeleteLoading(false);
       setDeleteConfirmOpen(false);
     }
-  };
-
-  const handleViewDetails = (user: User) => {
-    setSelectedUser(user);
-    // TODO: Implement view user details modal
-    console.log("View user details:", user);
   };
 
   // Filter and search data
@@ -166,7 +149,7 @@ export function UserAccounts() {
                   </ActionIcon>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item
+                  {/* <Menu.Item
                     leftSection={<IconEye size={14} />}
                     onClick={() => handleViewDetails(item)}
                   >
@@ -177,13 +160,13 @@ export function UserAccounts() {
                     onClick={() => handleEdit(item)}
                   >
                     Chỉnh sửa vai trò
-                  </Menu.Item>
+                  </Menu.Item> */}
                   <Menu.Item
                     leftSection={<IconTrash size={14} />}
                     color="red"
                     onClick={() => handleDeleteClick(item)}
                   >
-                    Vô hiệu hóa
+                    Xoá tài khoản
                   </Menu.Item>
                 </Menu.Dropdown>
               </Menu>

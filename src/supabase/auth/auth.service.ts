@@ -70,3 +70,13 @@ export const getUsers = async () => {
         return { data: null, error };
     }
 };
+
+export const deleteUser = async (id: string) => {
+    try {
+        const { error } = await supabaseAdmin.auth.admin.deleteUser(id);
+        if (error) throw error;
+        return { success: true, error: null };
+    } catch (error) {
+        return { success: false, error };
+    }
+};

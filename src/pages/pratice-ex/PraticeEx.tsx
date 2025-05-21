@@ -11,7 +11,6 @@ import { ExerciseTable } from "./ExerciseTable";
 import { UploadExerciseForm } from "./UploadExerciseForm";
 
 export default function PraticeEx() {
-  // Use the hook for data fetching and mutations
   const {
     exercises,
     isLoading,
@@ -42,8 +41,8 @@ export default function PraticeEx() {
   ) => {
     if (!exerciseData.category_id) {
       notifications.show({
-        title: "Error",
-        message: "Please select a category",
+        title: "Lỗi",
+        message: "Vui lòng chọn danh mục",
         color: "red",
       });
       return;
@@ -63,7 +62,6 @@ export default function PraticeEx() {
             },
             {
               onSuccess: () => {
-                // Close modal only after successful update
                 setIsModalOpen(false);
                 setIsEditMode(false);
                 setSelectedExercise(null);
@@ -77,7 +75,6 @@ export default function PraticeEx() {
         });
       } else if (audioFile) {
         try {
-          // Use the upload service to get a real URL from Supabase storage
           const audioUrl = await uploadAudioFile(audioFile);
 
           await new Promise<void>((resolve, reject) => {
@@ -92,7 +89,6 @@ export default function PraticeEx() {
               },
               {
                 onSuccess: () => {
-                  // Close modal only after successful creation
                   setIsModalOpen(false);
                   setIsEditMode(false);
                   setSelectedExercise(null);
@@ -105,13 +101,13 @@ export default function PraticeEx() {
             );
           });
         } catch (error) {
-          console.error("Error uploading audio file:", error);
-          alert("Error uploading audio file. Please try again.");
+          console.error("Lỗi khi tải lên file âm thanh:", error);
+          alert("Lỗi khi tải lên file âm thanh. Vui lòng thử lại.");
         }
       }
     } catch (error) {
-      console.error("Error during exercise submission:", error);
-      alert("Error saving exercise. Please try again.");
+      console.error("Lỗi khi lưu bài tập:", error);
+      alert("Lỗi khi lưu bài tập. Vui lòng thử lại.");
     }
   };
 
@@ -132,22 +128,21 @@ export default function PraticeEx() {
     setIsDetailsModalOpen(true);
   };
 
-  // Filter options
   const filters: FilterOption[] = [
     {
       id: "difficulty",
-      label: "Difficulty",
+      label: "Độ khó",
       options: [
-        { value: "easy", label: "Easy" },
-        { value: "medium", label: "Medium" },
-        { value: "hard", label: "Hard" },
+        { value: "easy", label: "Dễ" },
+        { value: "medium", label: "Trung bình" },
+        { value: "hard", label: "Khó" },
       ],
       value: difficultyFilter,
       onChange: setDifficultyFilter,
     },
     {
       id: "category",
-      label: "Category",
+      label: "Danh mục",
       options: [...new Set(exercises.map((ex) => ex.category?.type || ""))]
         .filter(Boolean)
         .map((category) => ({ value: category, label: category })),
@@ -156,9 +151,7 @@ export default function PraticeEx() {
     },
   ];
 
-  // Filter and search data
   const filteredData = exercises.filter((exercise) => {
-    // Apply search filter
     const matchesSearch =
       searchValue === "" ||
       Object.values(exercise).some(
@@ -167,12 +160,10 @@ export default function PraticeEx() {
           value.toLowerCase().includes(searchValue.toLowerCase())
       );
 
-    // Apply difficulty filter
     const matchesDifficulty =
       difficultyFilter.length === 0 ||
       difficultyFilter.includes(exercise.difficulty);
 
-    // Apply topic filter
     const matchesCategory =
       categoryFilter.length === 0 ||
       categoryFilter.includes(exercise.category?.type || "");
@@ -180,13 +171,11 @@ export default function PraticeEx() {
     return matchesSearch && matchesDifficulty && matchesCategory;
   });
 
-  // Clear all filters
   const handleClearFilters = () => {
     setDifficultyFilter([]);
     setCategoryFilter([]);
   };
 
-  // Determine if we're in a loading state for any operation
   const isProcessing = isLoading || isCreating || isUpdating || isDeleting;
 
   return (
@@ -196,31 +185,31 @@ export default function PraticeEx() {
           <Loader size="md" />
           <Text mt="md">
             {isLoading
-              ? "Loading exercises..."
+              ? "Đang tải bài tập..."
               : isCreating
-              ? "Creating new exercise..."
+              ? "Đang tạo bài tập mới..."
               : isUpdating
-              ? "Updating exercise..."
-              : "Deleting exercise..."}
+              ? "Đang cập nhật bài tập..."
+              : "Đang xóa bài tập..."}
           </Text>
         </Box>
       ) : isError ? (
         <Box py="xl" style={{ textAlign: "center" }}>
           <Text c="red">
-            An error occurred:{" "}
-            {error instanceof Error ? error.message : "Unable to load data"}
+            Đã xảy ra lỗi:{" "}
+            {error instanceof Error ? error.message : "Không thể tải dữ liệu"}
           </Text>
         </Box>
       ) : (
         <>
           <TableHeader
-            searchPlaceholder="Search exercises..."
+            searchPlaceholder="Tìm kiếm bài tập..."
             searchValue={searchValue}
             onSearchChange={setSearchValue}
             filters={filters}
             onClearFilters={handleClearFilters}
             addButton={{
-              label: "Add New Exercise",
+              label: "Thêm bài tập mới",
               onClick: () => {
                 setIsEditMode(false);
                 setSelectedExercise(null);
@@ -242,11 +231,9 @@ export default function PraticeEx() {
         </>
       )}
 
-      {/* Create/Edit Modal */}
       <Modal
         opened={isModalOpen}
         onClose={() => {
-          // Only allow closing if not in the process of creating or updating
           if (!isCreating && !isUpdating) {
             setIsModalOpen(false);
             setIsEditMode(false);
@@ -256,7 +243,7 @@ export default function PraticeEx() {
         closeOnClickOutside={!isCreating && !isUpdating}
         closeOnEscape={!isCreating && !isUpdating}
         withCloseButton={!isCreating && !isUpdating}
-        title={isEditMode ? "Edit Exercise" : "Create New Exercise"}
+        title={isEditMode ? "Chỉnh sửa bài tập" : "Tạo bài tập mới"}
         size="lg"
       >
         <UploadExerciseForm
@@ -267,11 +254,10 @@ export default function PraticeEx() {
         />
       </Modal>
 
-      {/* Details Modal */}
       <Modal
         opened={isDetailsModalOpen}
         onClose={() => setIsDetailsModalOpen(false)}
-        title="Exercise Details"
+        title="Chi tiết bài tập"
         size="lg"
       >
         {selectedExercise && (

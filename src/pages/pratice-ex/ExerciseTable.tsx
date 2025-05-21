@@ -1,9 +1,9 @@
-import { Badge, Menu, ActionIcon } from "@mantine/core";
+import { ActionIcon, Badge, Menu } from "@mantine/core";
 import {
-  IconEdit,
-  IconTrash,
-  IconEye,
   IconDotsVertical,
+  IconEdit,
+  IconEye,
+  IconTrash,
 } from "@tabler/icons-react";
 import DataTable, { Column } from "../../components/DataTable";
 import {
@@ -36,18 +36,18 @@ export function ExerciseTable({
   >[] = [
     {
       key: "index",
-      title: "Index",
+      title: "STT",
       render: (exercise) => exercise.index,
     },
     {
       key: "category",
-      title: "Category",
+      title: "Danh mục",
       render: (exercise) =>
         `${exercise.category?.type} ${exercise.category?.index}`,
     },
     {
       key: "difficulty",
-      title: "Difficulty",
+      title: "Độ khó",
       render: (exercise) => (
         <Badge
           size="sm"
@@ -60,16 +60,16 @@ export function ExerciseTable({
           }
         >
           {exercise.difficulty === "easy"
-            ? "Easy"
+            ? "Dễ"
             : exercise.difficulty === "medium"
-            ? "Medium"
-            : "Hard"}
+            ? "Trung bình"
+            : "Khó"}
         </Badge>
       ),
     },
     {
       key: "created_at",
-      title: "Created Date",
+      title: "Ngày tạo",
       render: (exercise) => new Date(exercise.created_at).toLocaleDateString(),
     },
   ];
@@ -84,7 +84,7 @@ export function ExerciseTable({
       page={page}
       onPageChange={onPageChange}
       itemsPerPage={itemsPerPage}
-      emptyMessage="No exercises found"
+      emptyMessage="Không tìm thấy bài tập nào"
       actionColumn={{
         width: 80,
         render: (exercise) => (
@@ -100,7 +100,7 @@ export function ExerciseTable({
                   leftSection={<IconEye size={14} />}
                   onClick={() => onViewDetails(exercise as ListeningExercise)}
                 >
-                  View Details
+                  Xem chi tiết
                 </Menu.Item>
               )}
               {onEdit && (
@@ -108,7 +108,7 @@ export function ExerciseTable({
                   leftSection={<IconEdit size={14} />}
                   onClick={() => onEdit(exercise as ListeningExercise)}
                 >
-                  Edit
+                  Chỉnh sửa
                 </Menu.Item>
               )}
               <Menu.Item
@@ -116,7 +116,7 @@ export function ExerciseTable({
                 color="red"
                 onClick={() => onDelete(exercise.id)}
               >
-                Delete
+                Xóa
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
