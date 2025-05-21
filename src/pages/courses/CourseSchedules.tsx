@@ -1,5 +1,6 @@
 import { Badge, Container, Group, Text, Title, Tooltip } from "@mantine/core";
 import dayjs from "dayjs";
+import { useState } from "react";
 import DataTable from "../../components/DataTable";
 import { Course } from "../../types/courses";
 
@@ -8,6 +9,7 @@ interface CourseSchedulesProps {
 }
 
 export default function CourseSchedules({ course }: CourseSchedulesProps) {
+  const [page, setPage] = useState(1);
   return (
     <Container size="xl">
       <Title order={4} mb="md">
@@ -18,6 +20,9 @@ export default function CourseSchedules({ course }: CourseSchedulesProps) {
         <DataTable
           data={course.lesson_details}
           keyExtractor={(lesson) => lesson.id}
+          page={page}
+          onPageChange={setPage}
+          itemsPerPage={10}
           columns={[
             {
               key: "date",

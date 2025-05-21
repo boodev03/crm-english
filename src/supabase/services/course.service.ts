@@ -76,6 +76,14 @@ export class CourseService implements ICourseService {
         .eq("id", id)
         .single();
       if (error) throw error;
+
+      // Sort lesson_details by start_time
+      if (data) {
+        data.lesson_details = data.lesson_details.sort((a: LessonDetail, b: LessonDetail) =>
+          new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
+        );
+      }
+
       return { data: data as Course, error: null };
     } catch (error) {
       return { data: null, error: error as Error };
@@ -158,7 +166,7 @@ export class CourseService implements ICourseService {
       return { data: null, error: error as Error };
     }
   }
-    
+
 }
 
 // Export a singleton instance

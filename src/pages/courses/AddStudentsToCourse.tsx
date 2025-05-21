@@ -8,19 +8,20 @@ import * as XLSX from "xlsx";
 import { enrollmentService } from "../../supabase/services/enrollment.service";
 import { studentService } from "../../supabase/services/student.service";
 import AddStudentToCourse from "./AddStudentToCourse";
+import { Course } from "../../types/courses";
 
 interface AddStudentsToCourseProps {
   opened: boolean;
   onClose: () => void;
-  courseId: string;
   onSuccess?: () => void;
+  courses: Course;
 }
 
 export default function AddStudentsToCourse({
   opened,
   onClose,
-  courseId,
   onSuccess,
+  courses,
 }: AddStudentsToCourseProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -66,12 +67,25 @@ export default function AddStudentsToCourse({
               continue;
             }
 
+            // Check if student is already enrolled
+            const isAlreadyEnrolled = courses.enrollments?.some(
+              (enrollment) => enrollment.student_id === existingStudent.id
+            );
+
+            if (isAlreadyEnrolled) {
+              errors.push({
+                row: rowNumber,
+                message: `Học viên với email ${row.email} đã được thêm vào khóa học này`,
+              });
+              continue;
+            }
+
             try {
               // Enroll student to course
               const { error: enrollmentError } =
                 await enrollmentService.createEnrollment({
                   student_id: existingStudent.id,
-                  course_id: courseId,
+                  course_id: courses.id,
                 });
 
               if (enrollmentError) throw enrollmentError;
@@ -127,7 +141,7 @@ export default function AddStudentsToCourse({
     } finally {
       setIsSubmitting(false);
     }
-  }, [file, courseId, onClose, onSuccess]);
+  }, [file, courses, onClose, onSuccess]);
 
   return (
     <>
@@ -183,7 +197,7 @@ export default function AddStudentsToCourse({
       <AddStudentToCourse
         opened={showAddStudentModal}
         onClose={() => setShowAddStudentModal(false)}
-        courseId={courseId}
+        courseId={courses.id}
         onSuccess={() => {
           if (onSuccess) onSuccess();
           setShowAddStudentModal(false);

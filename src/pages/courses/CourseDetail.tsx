@@ -88,9 +88,9 @@ export default function CourseDetail() {
       </Paper>
 
       <AddStudentsToCourse
+        courses={course}
         opened={addStudentModalOpened}
         onClose={() => setAddStudentModalOpened(false)}
-        courseId={course.id}
         onSuccess={() => {
           refetch();
           setAddStudentModalOpened(false);
