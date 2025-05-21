@@ -30,7 +30,6 @@ export function UploadExerciseForm({
   isSubmitting = false,
   categories,
 }: UploadExerciseFormProps) {
-  // Use Mantine form with validation
   const form = useForm({
     initialValues: {
       transcript: "",
@@ -38,8 +37,8 @@ export function UploadExerciseForm({
       category_id: initialData?.category_id || "",
     },
     validate: {
-      transcript: (value) => (value ? null : "Content is required"),
-      category_id: (value) => (value ? null : "Category is required"),
+      transcript: (value) => (value ? null : "Nội dung là bắt buộc"),
+      category_id: (value) => (value ? null : "Danh mục là bắt buộc"),
     },
     touchTrigger: "change",
   });
@@ -47,7 +46,6 @@ export function UploadExerciseForm({
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [isFormValid, setIsFormValid] = useState(false);
 
-  // Initialize form with initialData if in edit mode
   useEffect(() => {
     if (initialData) {
       form.setValues({
@@ -58,7 +56,6 @@ export function UploadExerciseForm({
     }
   }, [form, initialData]);
 
-  // Update form validity whenever form values or audioFile changes
   useEffect(() => {
     const formHasNoErrors = Object.keys(form.errors).length === 0;
     const transcriptIsValid = !!form.values.transcript;
@@ -71,9 +68,8 @@ export function UploadExerciseForm({
   }, [form.values, form.errors, audioFile, initialData]);
 
   const handleSubmit = form.onSubmit((values) => {
-    // Still validate file separately since it's not part of the form state
     if (!initialData && !audioFile) {
-      return; // FileInput will show validation message
+      return;
     }
 
     const exerciseData = {
@@ -84,7 +80,6 @@ export function UploadExerciseForm({
     onSubmit(exerciseData, audioFile);
   });
 
-  // Transform categories for Select component
   const categoryOptions = categories.map((category) => ({
     value: category.id,
     label: `${category.type} ${category.index}`,
@@ -100,27 +95,26 @@ export function UploadExerciseForm({
 
       <Box component="form" onSubmit={handleSubmit}>
         <FileInput
-          label="Audio File"
+          label="Tệp âm thanh"
           placeholder={
-            initialData ? "Upload new audio file" : "Upload audio file"
+            initialData ? "Tải lên tệp âm thanh mới" : "Tải lên tệp âm thanh"
           }
           accept="audio/*"
           required={!initialData}
           value={audioFile}
           onChange={(file) => {
             setAudioFile(file);
-            // Force validation on file change
             form.validate();
           }}
           leftSection={<IconUpload size={16} />}
           mb="md"
           disabled={isSubmitting}
-          error={!initialData && !audioFile ? "Audio file is required" : null}
+          error={!initialData && !audioFile ? "Tệp âm thanh là bắt buộc" : null}
         />
 
         <Textarea
-          label="Content"
-          placeholder="Enter the exact transcript of the audio"
+          label="Nội dung"
+          placeholder="Nhập chính xác nội dung của đoạn âm thanh"
           required
           minRows={4}
           mb="md"
@@ -130,8 +124,8 @@ export function UploadExerciseForm({
 
         <Group grow mb="md">
           <Select
-            label="Category"
-            placeholder="Select a category"
+            label="Danh mục"
+            placeholder="Chọn danh mục"
             required
             data={categoryOptions}
             disabled={isSubmitting}
@@ -139,13 +133,13 @@ export function UploadExerciseForm({
           />
 
           <Select
-            label="Difficulty"
-            placeholder="Select difficulty level"
+            label="Độ khó"
+            placeholder="Chọn mức độ khó"
             required
             data={[
-              { value: "easy", label: "Easy" },
-              { value: "medium", label: "Medium" },
-              { value: "hard", label: "Hard" },
+              { value: "easy", label: "Dễ" },
+              { value: "medium", label: "Trung bình" },
+              { value: "hard", label: "Khó" },
             ]}
             disabled={isSubmitting}
             {...form.getInputProps("difficulty")}
@@ -154,8 +148,8 @@ export function UploadExerciseForm({
 
         {isSubmitting && (
           <Text size="sm" c="blue" fw={500} mb="md">
-            Please wait while we process your exercise. Do not close this
-            dialog.
+            Vui lòng đợi trong khi chúng tôi xử lý bài tập của bạn. Không đóng
+            hộp thoại này.
           </Text>
         )}
 
@@ -166,7 +160,7 @@ export function UploadExerciseForm({
           disabled={isSubmitting || !isFormValid}
           fullWidth
         >
-          {initialData ? "Update Exercise" : "Create New Exercise"}
+          {initialData ? "Cập nhật bài tập" : "Tạo bài tập mới"}
         </Button>
       </Box>
     </Paper>

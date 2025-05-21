@@ -3,10 +3,8 @@ import {
   Box,
   Button,
   Container,
-  Group,
   Paper,
   PasswordInput,
-  Text,
   TextInput,
   Title,
 } from "@mantine/core";
@@ -15,7 +13,6 @@ import { nprogress } from "@mantine/nprogress";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { PUBLIC_ROUTES } from "../../routes/route";
 import { login } from "../../supabase/auth/auth.service";
 
 const Login = () => {
@@ -29,9 +26,9 @@ const Login = () => {
       password: "",
     },
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Email không hợp lệ"),
       password: (value) =>
-        value.length < 6 ? "Password should be at least 6 characters" : null,
+        value.length < 6 ? "Mật khẩu phải có ít nhất 6 ký tự" : null,
     },
   });
 
@@ -51,7 +48,7 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (err: unknown) {
       const errorMessage =
-        err instanceof Error ? err.message : "An error occurred during login";
+        err instanceof Error ? err.message : "Đã xảy ra lỗi khi đăng nhập";
       setError(errorMessage);
     } finally {
       nprogress.complete();
@@ -71,13 +68,13 @@ const Login = () => {
       <Box h="100%" w="100%">
         <Paper shadow="md" p="xl" radius="md" withBorder>
           <Title order={2} ta="center" mb="md">
-            Login to EngStudy Center
+            Đăng nhập vào EngStudy Center
           </Title>
 
           {error && (
             <Alert
               icon={<IconAlertCircle size={16} />}
-              title="Error"
+              title="Lỗi"
               color="red"
               mb="md"
             >
@@ -89,7 +86,7 @@ const Login = () => {
             <TextInput
               required
               label="Email"
-              placeholder="your@email.com"
+              placeholder="email@example.com"
               {...form.getInputProps("email")}
               autoComplete="email"
             />
@@ -97,27 +94,27 @@ const Login = () => {
             <PasswordInput
               required
               mt="md"
-              label="Password"
-              placeholder="Your password"
+              label="Mật khẩu"
+              placeholder="Nhập mật khẩu của bạn"
               {...form.getInputProps("password")}
               autoComplete="current-password"
             />
 
             <Button type="submit" fullWidth mt="xl" loading={form.submitting}>
-              Sign in
+              Đăng nhập
             </Button>
           </form>
 
-          <Group justify="center" mt="md">
-            <Text size="sm">Don't have an account?</Text>
+          {/* <Group justify="center" mt="md">
+            <Text size="sm">Bạn chưa có tài khoản?</Text>
             <Button
               variant="subtle"
               disabled={form.submitting}
               onClick={() => navigate(PUBLIC_ROUTES.auth.register)}
             >
-              Register
+              Đăng ký
             </Button>
-          </Group>
+          </Group> */}
         </Paper>
       </Box>
     </Container>
